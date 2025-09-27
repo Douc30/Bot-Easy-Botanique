@@ -1,49 +1,43 @@
-// Fonction asynchrone pour charger les détails de l'espèce
+// Contenu à mettre dans fiche-script.js
+// ------------------------------------
+
 async function loadPlanteDetails() {
-    // 1. Récupérer l'ID de la plante depuis l'URL (Ex: ?id=1)
     const urlParams = new URLSearchParams(window.location.search);
     const planteId = parseInt(urlParams.get('id'));
-
     const ficheContent = document.querySelector('.fiche-content');
 
-    // Vérification initiale de l'ID
     if (!planteId) {
-        ficheContent.innerHTML = "<p class='error-message'>Erreur: ID de plante non spécifié. Retournez à l'accueil pour sélectionner une espèce.</p>";
+        ficheContent.innerHTML = "<p class='error-message'>Erreur: ID de plante non spécifié. Retournez à l'accueil.</p>";
         return;
     }
 
-    // 2. Charger toutes les données depuis data.json
     try {
         const response = await fetch('data.json');
         if (!response.ok) throw new Error("Erreur de chargement de data.json");
         const allPlantesData = await response.json();
         
-        // 3. Trouver la plante correspondante
         const plante = allPlantesData.find(p => p.id_plante === planteId);
 
         if (plante) {
-            // 4. Générer et afficher le contenu dynamique
             renderPlante(plante);
         } else {
-            ficheContent.innerHTML = "<p class='error-message'>Erreur: Plante non trouvée dans la base de données (ID non valide).</p>";
+            ficheContent.innerHTML = "<p class='error-message'>Erreur: Plante non trouvée dans la base de données.</p>";
         }
 
     } catch (error) {
         console.error("Erreur critique lors du chargement des données:", error);
-        ficheContent.innerHTML = "<p class='error-message'>Erreur: Impossible de charger les données botaniques. (Serveur local requis)</p>";
+        ficheContent.innerHTML = "<p class='error-message'>Erreur: Impossible de charger les données botaniques. Vérifiez la console pour plus de détails.</p>";
     }
 }
 
-// Fonction pour injecter les données dans le HTML
 function renderPlante(p) {
     const header = document.querySelector('.fiche-header');
     const imageContainer = document.getElementById('image-container');
     const detailsContainer = document.getElementById('details-container');
-
-    // Nettoie le nom du milieu pour la classe CSS (ex: "milieu ouvert" devient "milieu-ouvert")
+    
     const milieuClass = p.milieu_principal.toLowerCase().replace(/\s/g, '-');
     
-    // --- 1. Remplir l'en-tête (Header) ---
+    // Remplissage de l'en-tête
     header.innerHTML = `
         <div class="identification">
             <p class="famille-tag">Famille : ${p.famille}</p>
@@ -61,12 +55,11 @@ function renderPlante(p) {
         </div>
     `;
 
-    // --- 2. Remplir la colonne Image (Galerie) ---
+    // Remplissage de la colonne Image
     let miniaturesHTML = '';
     if (p.urls_images_secondaires && p.urls_images_secondaires.length > 0) {
          miniaturesHTML = p.urls_images_secondaires.map(url => 
-            // NOTE: Assurez-vous que les images secondaires existent dans votre dossier images/
-            `<img src="${url}" alt="Zoom sur un organe">`
+            `<img src="${url}" alt="Zoom sur un organe de la plante">`
         ).join('');
     }
 
@@ -81,7 +74,7 @@ function renderPlante(p) {
     `;
 
 
-    // --- 3. Remplir la colonne Détails ---
+    // Remplissage de la colonne Détails
     detailsContainer.innerHTML = `
         <div class="bloc-details">
             <h2>1. Description & Morphologie</h2>
@@ -91,16 +84,21 @@ function renderPlante(p) {
         <div class="bloc-details">
             <h3>Caractéristiques Clés d'Identification</h3>
             <ul>
-                <li>**Type de Feuille :** ${p.type_feuille}</li>
-                <li>**Disposition :** ${p.disposition_feuille}</li>
+                <li>**Type de Feuille :** <a href="glossaire.html">${p.type_feuille}</a></li>
+                <li>**Disposition :** <a href="glossaire.html">${p.disposition_feuille}</a></li>
                 <li>**Couleur des Fleurs :** ${p.couleur_fleur}</li>
                 <li>**Type de Fruit :** ${p.type_fruit}</li>
             </ul>
         </div>
         
+        <div class="bloc-details">
+            <h2>2. Éléments Complémentaires</h2>
+            <p>Ajouter ici les informations sur l'écologie, les usages et le type de sol.</p>
+        </div>
+
         <div class="bloc-details taxonomie">
             <h2>3. Vérification des Données</h2>
-            <p>Source de vérification : ${p.source_verification}</p>
+            <p>Source de vérification : <strong>${p.source_verification}</strong></p>
         </div>
         
         <div class="admin-meta">
@@ -109,5 +107,4 @@ function renderPlante(p) {
     `;
 }
 
-// Lancer le chargement des détails lorsque la page est prête
 loadPlanteDetails();
