@@ -1,16 +1,18 @@
-// Fonction asynchrone pour récupérer les données et afficher la plante
+// Fonction asynchrone pour charger les détails de l'espèce
 async function loadPlanteDetails() {
     // 1. Récupérer l'ID de la plante depuis l'URL (Ex: ?id=1)
     const urlParams = new URLSearchParams(window.location.search);
     const planteId = parseInt(urlParams.get('id'));
 
-    // Si aucun ID n'est trouvé, rediriger ou afficher un message d'erreur
+    const ficheContent = document.querySelector('.fiche-content');
+
+    // Vérification initiale de l'ID
     if (!planteId) {
-        document.querySelector('.fiche-content').innerHTML = "<p>Erreur: ID de plante non spécifié.</p>";
+        ficheContent.innerHTML = "<p class='error-message'>Erreur: ID de plante non spécifié. Retournez à l'accueil pour sélectionner une espèce.</p>";
         return;
     }
 
-    // 2. Charger toutes les données
+    // 2. Charger toutes les données depuis data.json
     try {
         const response = await fetch('data.json');
         if (!response.ok) throw new Error("Erreur de chargement de data.json");
@@ -20,15 +22,15 @@ async function loadPlanteDetails() {
         const plante = allPlantesData.find(p => p.id_plante === planteId);
 
         if (plante) {
-            // 4. Générer le contenu dynamique
+            // 4. Générer et afficher le contenu dynamique
             renderPlante(plante);
         } else {
-            document.querySelector('.fiche-content').innerHTML = "<p>Erreur: Plante non trouvée dans la base de données.</p>";
+            ficheContent.innerHTML = "<p class='error-message'>Erreur: Plante non trouvée dans la base de données (ID non valide).</p>";
         }
 
     } catch (error) {
-        console.error("Erreur critique:", error);
-        document.querySelector('.fiche-content').innerHTML = "<p>Erreur: Impossible de charger les données botaniques.</p>";
+        console.error("Erreur critique lors du chargement des données:", error);
+        ficheContent.innerHTML = "<p class='error-message'>Erreur: Impossible de charger les données botaniques. (Serveur local requis)</p>";
     }
 }
 
@@ -37,17 +39,20 @@ function renderPlante(p) {
     const header = document.querySelector('.fiche-header');
     const imageContainer = document.getElementById('image-container');
     const detailsContainer = document.getElementById('details-container');
+
+    // Nettoie le nom du milieu pour la classe CSS (ex: "milieu ouvert" devient "milieu-ouvert")
+    const milieuClass = p.milieu_principal.toLowerCase().replace(/\s/g, '-');
     
     // --- 1. Remplir l'en-tête (Header) ---
     header.innerHTML = `
         <div class="identification">
             <p class="famille-tag">Famille : ${p.famille}</p>
             <h1>${p.nom_commun_fr}</h1>
-            <p class="scientifique-name">**${p.nom_scientifique}**</p>
+            <p class="scientifique-name"><i>${p.nom_scientifique}</i></p>
         </div>
         
         <div class="meta-info">
-            <div class="milieu-badge ${p.milieu_principal.toLowerCase()}">
+            <div class="milieu-badge ${milieuClass}">
                 Milieu Principal : ${p.milieu_principal} 🌳
             </div>
             <div class="milieu-badge statut">
@@ -56,15 +61,18 @@ function renderPlante(p) {
         </div>
     `;
 
-    // --- 2. Remplir la colonne Image (avec votre image) ---
-    // Assurez-vous que l'URL d'image ici est la seule affichée
-    let miniaturesHTML = p.urls_images_secondaires ? p.urls_images_secondaires.map(url => 
-        `<img src="${url}" alt="Zoom sur un organe">`
-    ).join('') : '';
+    // --- 2. Remplir la colonne Image (Galerie) ---
+    let miniaturesHTML = '';
+    if (p.urls_images_secondaires && p.urls_images_secondaires.length > 0) {
+         miniaturesHTML = p.urls_images_secondaires.map(url => 
+            // NOTE: Assurez-vous que les images secondaires existent dans votre dossier images/
+            `<img src="${url}" alt="Zoom sur un organe">`
+        ).join('');
+    }
 
     imageContainer.innerHTML = `
         <figure>
-            <img src="${p.url_image_principale}" alt="Illustration de ${p.nom_commun_fr}">
+            <img src="${p.url_image_principale}" alt="Image principale de ${p.nom_commun_fr}">
             <figcaption>Cliché de ${p.nom_commun_fr} par un contributeur Bot'Easy.</figcaption>
         </figure>
         <div class="galerie-miniatures">
@@ -93,6 +101,10 @@ function renderPlante(p) {
         <div class="bloc-details taxonomie">
             <h2>3. Vérification des Données</h2>
             <p>Source de vérification : ${p.source_verification}</p>
+        </div>
+        
+        <div class="admin-meta">
+            <p>Fiche générée automatiquement. Dernière mise à jour des données : ${new Date().toLocaleDateString('fr-FR')}.</p>
         </div>
     `;
 }
