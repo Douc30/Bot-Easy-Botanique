@@ -159,7 +159,7 @@ h2 {
     margin-bottom: 10px;
 }
 
-/* Couleurs spécifiques aux milieux */
+/* Couleurs spécifiques aux milieux (Utilisé par index.html) */
 .forestier { background-color: #e0f2e0; }
 .agricole { background-color: #fffacd; }
 .ouvert { background-color: #f0e68c; }
@@ -268,6 +268,22 @@ footer a {
     .feature-item {
         flex-basis: 100%;
     }
+    
+    /* Adaptations Fiche Espèce Mobile */
+    .fiche-content {
+        flex-direction: column;
+    }
+    .colonne-image, .colonne-details {
+        min-width: 100%;
+    }
+    .meta-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .milieu-badge {
+        width: 100%;
+        text-align: center;
+    }
 }
 
 /* --- Styles Spécifiques aux Fiches d'Espèce --- */
@@ -319,10 +335,18 @@ footer a {
     font-size: 0.9rem;
 }
 
-/* Couleurs des badges spécifiques */
-.milieu-badge.forestier {
+/* Couleurs des badges spécifiques pour la fiche (DOIT CORRESPONDRE AU JS) */
+.milieu-badge.forestiere {
     background-color: #d1e7dd;
     color: var(--color-green-dark);
+}
+.milieu-badge.agricole {
+    background-color: #fffacd;
+    color: #8b4513;
+}
+.milieu-badge.milieu-ouvert {
+    background-color: #f0e68c;
+    color: #708090;
 }
 .milieu-badge.statut {
     background-color: #f8d7da;
@@ -432,24 +456,6 @@ figcaption {
     padding-top: 30px;
 }
 
-/* Adaptation Mobile */
-@media (max-width: 768px) {
-    .fiche-content {
-        flex-direction: column;
-    }
-    .colonne-image, .colonne-details {
-        min-width: 100%;
-    }
-    .meta-info {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .milieu-badge {
-        width: 100%;
-        text-align: center;
-    }
-}
-
 /* --- Styles pour la Liste d'Espèces Générée par JS --- */
 .liste-container {
     display: grid;
@@ -498,16 +504,16 @@ figcaption {
     font-weight: 700;
 }
 
-/* Couleurs des badges de milieu dans la liste */
-.forestière {
+/* Couleurs des badges de milieu dans la liste (CORRECTION EFFECTIVE) */
+.plante-item .badge.forestiere { 
     background-color: #e0f2e0;
     color: #2a5a3a;
 }
-.agricole {
+.plante-item .badge.agricole {
     background-color: #fffacd;
     color: #8b4513;
 }
-.ouvert {
+.plante-item .badge.milieu-ouvert { /* Correspond à la classe générée: .milieu-ouvert */
     background-color: #f0e68c;
     color: #708090;
 }
