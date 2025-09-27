@@ -37,7 +37,7 @@ function renderPlante(p) {
     
     const milieuClass = p.milieu_principal.toLowerCase().replace(/\s/g, '-');
     
-    // Remplissage de l'en-tête
+    // --- Remplissage de l'en-tête (Aucun changement nécessaire) ---
     header.innerHTML = `
         <div class="identification">
             <p class="famille-tag">Famille : ${p.famille}</p>
@@ -55,17 +55,23 @@ function renderPlante(p) {
         </div>
     `;
 
-    // Remplissage de la colonne Image
+    // --- Remplissage de la colonne Image (Amélioration) ---
+    
+    // URL de substitution si l'URL principale est manquante (utilisez un chemin local si vous le créez)
+    const fallbackImage = 'https://via.placeholder.com/600x400?text=Image+Manquante';
+    const mainImageUrl = p.url_image_principale || fallbackImage; 
+    
     let miniaturesHTML = '';
     if (p.urls_images_secondaires && p.urls_images_secondaires.length > 0) {
          miniaturesHTML = p.urls_images_secondaires.map(url => 
-            `<img src="${url}" alt="Zoom sur un organe de la plante">`
+            // Chaque miniature utilise son URL ou l'URL de substitution
+            `<img src="${url || fallbackImage}" alt="Zoom sur un organe de la plante">`
         ).join('');
     }
 
     imageContainer.innerHTML = `
         <figure>
-            <img src="${p.url_image_principale}" alt="Image principale de ${p.nom_commun_fr}">
+            <img src="${mainImageUrl}" alt="Image principale de ${p.nom_commun_fr}">
             <figcaption>Cliché de ${p.nom_commun_fr} par un contributeur Bot'Easy.</figcaption>
         </figure>
         <div class="galerie-miniatures">
@@ -74,7 +80,7 @@ function renderPlante(p) {
     `;
 
 
-    // Remplissage de la colonne Détails
+    // --- Remplissage de la colonne Détails (Aucun changement nécessaire) ---
     detailsContainer.innerHTML = `
         <div class="bloc-details">
             <h2>1. Description & Morphologie</h2>
@@ -106,5 +112,3 @@ function renderPlante(p) {
         </div>
     `;
 }
-
-loadPlanteDetails();
