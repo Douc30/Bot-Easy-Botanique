@@ -28,7 +28,13 @@ function displayPlantes(plantesToDisplay) {
     if (!listeSection) {
         listeSection = document.createElement('section');
         listeSection.id = 'liste-especes';
-        document.querySelector('main').appendChild(listeSection);
+        // Ajout de la section après la grille de catégories
+        const gridSection = document.getElementById('bibliotheque');
+        if (gridSection) {
+             gridSection.after(listeSection);
+        } else {
+             document.querySelector('main').appendChild(listeSection);
+        }
 
         // Ajout du titre et du conteneur de liste
         listeSection.innerHTML = `
@@ -49,13 +55,16 @@ function displayPlantes(plantesToDisplay) {
     plantesToDisplay.forEach(plante => {
         const item = document.createElement('div');
         item.className = 'plante-item';
+        // Génère une classe CSS cohérente (ex: "milieu-ouvert")
+        const milieuClass = plante.milieu_principal.toLowerCase().replace(/\s/g, '-'); 
+        
         // Le lien pointe vers la page fiche-espece.html et transmet l'ID
         item.innerHTML = `
             <img src="${plante.url_image_principale}" alt="${plante.nom_commun_fr}" class="plante-thumb">
             <div>
                 <h3><a href="fiche-espece.html?id=${plante.id_plante}">${plante.nom_commun_fr}</a></h3>
                 <p><i>${plante.nom_scientifique}</i></p>
-                <p>Famille: ${plante.famille} | Milieu: <span class="badge ${plante.milieu_principal.toLowerCase().replace(/\s/g, '-')}">${plante.milieu_principal}</span></p>
+                <p>Famille: ${plante.famille} | Milieu: <span class="badge ${milieuClass}">${plante.milieu_principal}</span></p>
             </div>
         `;
         container.appendChild(item);
@@ -65,7 +74,8 @@ function displayPlantes(plantesToDisplay) {
 // Fonction de Filtrage
 function filterPlantes(milieu) {
     let filteredPlantes = allPlantesData;
-    const cleanMilieu = milieu.toLowerCase().replace(/-/g, ' '); // Nettoie le nom du milieu pour la comparaison
+    // Nettoie le nom du milieu pour la comparaison (ex: "milieu-ouvert" devient "milieu ouvert")
+    const cleanMilieu = milieu.toLowerCase().replace(/-/g, ' '); 
 
     if (milieu !== 'toutes') {
         // Filtrer les plantes dont le milieu_principal correspond au filtre
@@ -76,7 +86,10 @@ function filterPlantes(milieu) {
     
     // Mettre à jour le titre
     const titre = document.querySelector('#liste-especes h2');
-    titre.textContent = `Espèces (${milieu === 'toutes' ? 'Toutes' : cleanMilieu.charAt(0).toUpperCase() + cleanMilieu.slice(1)}) (${filteredPlantes.length})`;
+    // Met le nom du milieu en majuscule pour le titre (ex: "Forestière")
+    const displayMilieu = milieu === 'toutes' ? 'Toutes' : cleanMilieu.charAt(0).toUpperCase() + cleanMilieu.slice(1);
+    
+    titre.textContent = `Espèces (${displayMilieu}) (${filteredPlantes.length})`;
 
     // Afficher le résultat du filtre
     displayPlantes(filteredPlantes);
@@ -92,21 +105,23 @@ function setupFilters() {
         if (item) {
             item.querySelector('a').onclick = (e) => { 
                 e.preventDefault(); 
-                filterPlantes(milieuName.toLowerCase()); // Assure que le nom du filtre est en minuscules
+                // Remplace les espaces par des tirets pour le filtre (ex: 'milieu-ouvert')
+                filterPlantes(milieuName.toLowerCase().replace(/\s/g, '-')); 
             };
         }
     };
     
     // 1. Attacher les événements aux filtres de la grille
+    // Note : Le nom doit correspondre exactement à la valeur dans data.json (sauf la casse)
     attachFilterEvent('.grid-item.forestier', 'forestière');
     attachFilterEvent('.grid-item.agricole', 'agricole');
-    attachFilterEvent('.grid-item.ouvert', 'milieu ouvert'); // Doit correspondre à la valeur dans data.json
+    attachFilterEvent('.grid-item.ouvert', 'milieu ouvert'); 
 
     // 2. Ajout du bouton "Toutes les espèces"
     const toutesButton = document.createElement('a');
     toutesButton.href = '#';
     toutesButton.textContent = 'Voir TOUTES les espèces →';
-    toutesButton.className = 'cta-secondary'; // Changement de classe pour un meilleur style
+    toutesButton.className = 'cta-secondary'; 
     toutesButton.style.marginTop = '20px';
     toutesButton.onclick = (e) => {
         e.preventDefault();
@@ -119,14 +134,16 @@ function setupFilters() {
         const boutonDiv = document.createElement('div');
         boutonDiv.style.textAlign = 'center';
         boutonDiv.appendChild(toutesButton);
-        gridContainer.after(boutonDiv);
+        // Ajoute le bouton après la section de la grille
+        document.getElementById('bibliotheque').after(boutonDiv); 
     }
 }
 
 // Exécution principale
 fetchPlantes().then(() => {
     // S'assurer que les filtres sont configurés après le chargement des données
-    if (document.getElementById('bibliotheque')) {
+    // Cette condition vérifie que nous sommes bien sur la page d'accueil
+    if (document.getElementById('bibliotheque')) { 
         setupFilters();
     }
 });
