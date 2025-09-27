@@ -1,7 +1,50 @@
-<html>
- <body>
-  <script src="fiche-script.js"></script> 
- </body>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche Espèce - Bot'Easy</title> 
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <header>
+        <div class="logo">Bot'Easy</div>
+        <nav>
+            <a href="index.html">Accueil</a>
+            <a href="#bibliotheque" class="active">Bibliothèque</a>
+            <a href="glossaire.html">Apprendre</a>
+            <a href="#">Contribuer</a>
+            <a href="#">À Propos</a>
+        </nav>
+    </header>
+
+    <main class="fiche-main">
+        
+        <section class="fiche-header">
+            <h1>Chargement des détails de l'espèce...</h1>
+        </section>
+
+        <section class="fiche-content">
+            
+            <div class="colonne-image" id="image-container">
+                <p>Chargement de l'image...</p>
+            </div>
+            
+            <div class="colonne-details" id="details-container">
+                <div class="bloc-details">
+                    <p>Veuillez patienter pendant le chargement des caractéristiques...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Bot'Easy - Projet Éducatif | <a href="#">Sources</a> | <a href="#propos">À Propos</a></p>
+    </footer>
+
+    <script src="fiche-script.js"></script>
+</body>
 </html>
-
-
