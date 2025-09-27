@@ -1,20 +1,28 @@
 [
   {
-    "id_plante": 1,
-    "nom_scientifique": "Quercus robur",
-    "nom_commun_fr": "Chêne Pédonculé",
-    "famille": "Fagaceae",
-    "milieu_principal": "Forestière",
-    "milieu_secondaire": ["Milieu Ouvert"],
-    "statut_conservation": "Préoccupation mineure",
-    "description_generale": "Grand arbre feuillu pouvant atteindre 30 à 40 mètres. Caractérisé par sa longévité et sa cime massive. Dominant des forêts caducifoliées d'Europe.",
-    "type_feuille": "Lobée",
-    "disposition_feuille": "Alterne",
-    "couleur_fleur": "Incolore",
-    "type_fruit": "Gland",
-    "url_image_principale": "images/Chêne pedon_F1.jpg",
-    "source_verification": "Base de données Flore Européenne"
-  },
+  "id_plante": 1,
+  "nom_scientifique": "Quercus robur",
+  "nom_commun_fr": "Chêne Pédonculé",
+  "famille": "Fagaceae",
+  "milieu_principal": "Forestière",
+  "milieu_secondaire": ["Milieu Ouvert"],
+  "statut_conservation": "Préoccupation mineure",
+  "description_generale": "Grand arbre feuillu pouvant atteindre 30 à 40 mètres. Caractérisé par sa longévité et sa cime massive. Dominant des forêts caducifoliées d'Europe.",
+  "type_feuille": "Lobée",
+  "disposition_feuille": "Alterne",
+  "couleur_fleur": "Incolore",
+  "type_fruit": "Gland",
+  "url_image_principale": "images/Chêne pedon_F1.jpg",
+  
+  "urls_images_secondaires": [
+    "images/Chêne pedon_F2.jpg",
+    "images/Chêne pedon_F3.jpg",
+    "images/Chêne pedon_F4.jpg"
+  ],
+  
+  "source_verification": "Base de données Flore Européenne"
+},
+    
   {
     "id_plante": 2,
     "nom_scientifique": "Triticum aestivum",
@@ -29,6 +37,11 @@
     "couleur_fleur": "Vert-jaune",
     "type_fruit": "Caryopse",
     "url_image_principale": "https://picsum.photos/600/400?wheat,field",
+    "urls_images_secondaires": [
+    "images/Chêne pedon_F2.jpg",
+    "images/Chêne pedon_F3.jpg",
+    "images/Chêne pedon_F4.jpg"
+  ],
     "source_verification": "Base de données agronomique"
   },
 {
@@ -45,9 +58,15 @@
     "couleur_fleur": "Jaune",
     "type_fruit": "Silique",
     "url_image_principale": "https://picsum.photos/600/400?rapeseed,yellow",
+  "urls_images_secondaires": [
+    "images/Chêne pedon_F2.jpg",
+    "images/Chêne pedon_F3.jpg",
+    "images/Chêne pedon_F4.jpg"
+  ],
     "source_verification": "Base de données agronomique"
   }
 
 
 ]
+
 
