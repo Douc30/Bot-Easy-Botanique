@@ -1,0 +1,51 @@
+[
+  {
+    "id_plante": 1,
+    "nom_scientifique": "Quercus robur",
+    "nom_commun_fr": "Chêne Pédonculé",
+    "famille": "Fagaceae",
+    "milieu_principal": "Forestière",
+    "milieu_secondaire": ["Milieu Ouvert"],
+    "statut_conservation": "Préoccupation mineure",
+    "description_generale": "Grand arbre feuillu pouvant atteindre 30 à 40 mètres. Caractérisé par sa longévité et sa cime massive. Dominant des forêts caducifoliées d'Europe.",
+    "type_feuille": "Lobée",
+    "disposition_feuille": "Alterne",
+    "couleur_fleur": "Incolore",
+    "type_fruit": "Gland",
+    "url_image_principale": "https://picsum.photos/600/400?tree,oak",
+    "source_verification": "Base de données Flore Européenne"
+  },
+  {
+    "id_plante": 2,
+    "nom_scientifique": "Triticum aestivum",
+    "nom_commun_fr": "Blé Tendre",
+    "famille": "Poaceae",
+    "milieu_principal": "Agricole",
+    "milieu_secondaire": [],
+    "statut_conservation": "Domestiqué",
+    "description_generale": "Plante herbacée annuelle, cultivée mondialement pour son grain. Elle forme des épis et est la base de nombreuses alimentations.",
+    "type_feuille": "Linéaire",
+    "disposition_feuille": "Alterne",
+    "couleur_fleur": "Vert-jaune",
+    "type_fruit": "Caryopse",
+    "url_image_principale": "https://picsum.photos/600/400?wheat,field",
+    "source_verification": "Base de données agronomique"
+  },
+{
+    "id_plante": 3,
+    "nom_scientifique": "Brassica napus",
+    "nom_commun_fr": "Colza",
+    "famille": "Brassicaseae",
+    "milieu_principal": "Agricole",
+    "milieu_secondaire": [],
+    "statut_conservation": "Domestiqué",
+    "description_generale": "Plante oléagineuse annuelle aux fleurs jaune vif. Largement cultivée pour la production d'huile alimentaire et de biocarburants.",
+    "type_feuille": "Pennatilobée",
+    "disposition_feuille": "Alterne",
+    "couleur_fleur": "Jaune",
+    "type_fruit": "Silique",
+    "url_image_principale": "https://picsum.photos/600/400?rapeseed,yellow",
+    "source_verification": "Base de données agronomique"
+  }
+
+]
