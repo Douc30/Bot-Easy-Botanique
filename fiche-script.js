@@ -1,0 +1,101 @@
+// Fonction asynchrone pour récupérer les données et afficher la plante
+async function loadPlanteDetails() {
+    // 1. Récupérer l'ID de la plante depuis l'URL (Ex: ?id=1)
+    const urlParams = new URLSearchParams(window.location.search);
+    const planteId = parseInt(urlParams.get('id'));
+
+    // Si aucun ID n'est trouvé, rediriger ou afficher un message d'erreur
+    if (!planteId) {
+        document.querySelector('.fiche-content').innerHTML = "<p>Erreur: ID de plante non spécifié.</p>";
+        return;
+    }
+
+    // 2. Charger toutes les données
+    try {
+        const response = await fetch('data.json');
+        if (!response.ok) throw new Error("Erreur de chargement de data.json");
+        const allPlantesData = await response.json();
+        
+        // 3. Trouver la plante correspondante
+        const plante = allPlantesData.find(p => p.id_plante === planteId);
+
+        if (plante) {
+            // 4. Générer le contenu dynamique
+            renderPlante(plante);
+        } else {
+            document.querySelector('.fiche-content').innerHTML = "<p>Erreur: Plante non trouvée dans la base de données.</p>";
+        }
+
+    } catch (error) {
+        console.error("Erreur critique:", error);
+        document.querySelector('.fiche-content').innerHTML = "<p>Erreur: Impossible de charger les données botaniques.</p>";
+    }
+}
+
+// Fonction pour injecter les données dans le HTML
+function renderPlante(p) {
+    const header = document.querySelector('.fiche-header');
+    const imageContainer = document.getElementById('image-container');
+    const detailsContainer = document.getElementById('details-container');
+    
+    // --- 1. Remplir l'en-tête (Header) ---
+    header.innerHTML = `
+        <div class="identification">
+            <p class="famille-tag">Famille : ${p.famille}</p>
+            <h1>${p.nom_commun_fr}</h1>
+            <p class="scientifique-name">**${p.nom_scientifique}**</p>
+        </div>
+        
+        <div class="meta-info">
+            <div class="milieu-badge ${p.milieu_principal.toLowerCase()}">
+                Milieu Principal : ${p.milieu_principal} 🌳
+            </div>
+            <div class="milieu-badge statut">
+                Statut de Conservation : ${p.statut_conservation}
+            </div>
+        </div>
+    `;
+
+    // --- 2. Remplir la colonne Image (avec votre image) ---
+    // Assurez-vous que l'URL d'image ici est la seule affichée
+    let miniaturesHTML = p.urls_images_secondaires ? p.urls_images_secondaires.map(url => 
+        `<img src="${url}" alt="Zoom sur un organe">`
+    ).join('') : '';
+
+    imageContainer.innerHTML = `
+        <figure>
+            <img src="${p.url_image_principale}" alt="Illustration de ${p.nom_commun_fr}">
+            <figcaption>Cliché de ${p.nom_commun_fr} par un contributeur Bot'Easy.</figcaption>
+        </figure>
+        <div class="galerie-miniatures">
+            ${miniaturesHTML}
+        </div>
+    `;
+
+
+    // --- 3. Remplir la colonne Détails ---
+    detailsContainer.innerHTML = `
+        <div class="bloc-details">
+            <h2>1. Description & Morphologie</h2>
+            <p>${p.description_generale}</p>
+        </div>
+
+        <div class="bloc-details">
+            <h3>Caractéristiques Clés d'Identification</h3>
+            <ul>
+                <li>**Type de Feuille :** ${p.type_feuille}</li>
+                <li>**Disposition :** ${p.disposition_feuille}</li>
+                <li>**Couleur des Fleurs :** ${p.couleur_fleur}</li>
+                <li>**Type de Fruit :** ${p.type_fruit}</li>
+            </ul>
+        </div>
+        
+        <div class="bloc-details taxonomie">
+            <h2>3. Vérification des Données</h2>
+            <p>Source de vérification : ${p.source_verification}</p>
+        </div>
+    `;
+}
+
+// Lancer le chargement des détails lorsque la page est prête
+loadPlanteDetails();
