@@ -40,8 +40,10 @@ function renderPlante(p) {
     const imageContainer = document.getElementById('image-container');
     const detailsContainer = document.getElementById('details-container');
     
-    // --- 1. Remplir l'en-tête (Header) ---
-    // Nettoie l'ancien contenu (le "Chargement...") et le remplace
+    // Nettoie le nom du milieu pour la classe CSS (ex: "milieu ouvert" devient "milieu-ouvert")
+    const milieuClass = p.milieu_principal.toLowerCase().replace(/\s/g, '-');
+    
+    // --- 1. Remplir l'en-tête (Header) avec les balises HTML nécessaires ---
     header.innerHTML = `
         <div class="identification">
             <p class="famille-tag">Famille : ${p.famille}</p>
@@ -50,7 +52,7 @@ function renderPlante(p) {
         </div>
         
         <div class="meta-info">
-            <div class="milieu-badge ${p.milieu_principal.toLowerCase().replace(/\s/g, '-')}">
+            <div class="milieu-badge ${milieuClass}">
                 Milieu Principal : ${p.milieu_principal} 🌳
             </div>
             <div class="milieu-badge statut">
@@ -61,7 +63,6 @@ function renderPlante(p) {
 
     // --- 2. Remplir la colonne Image (Galerie) ---
     
-    // Génère les miniatures (en vérifiant si la clé existe dans data.json)
     let miniaturesHTML = '';
     if (p.urls_images_secondaires && p.urls_images_secondaires.length > 0) {
          miniaturesHTML = p.urls_images_secondaires.map(url => 
@@ -82,7 +83,6 @@ function renderPlante(p) {
 
     // --- 3. Remplir la colonne Détails ---
     
-    // Le code généré ici remplace TOUT le contenu du div id="details-container"
     detailsContainer.innerHTML = `
         <div class="bloc-details">
             <h2>1. Description & Morphologie</h2>
@@ -110,7 +110,7 @@ function renderPlante(p) {
         </div>
         
         <div class="admin-meta">
-            <p>Fiche générée automatiquement. Dernière mise à jour des données : 2024.</p>
+            <p>Fiche générée automatiquement. Dernière mise à jour des données : ${new Date().toLocaleDateString('fr-FR')}.</p>
         </div>
     `;
 }
