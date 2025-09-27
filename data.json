@@ -12,7 +12,7 @@
     "disposition_feuille": "Alterne",
     "couleur_fleur": "Incolore",
     "type_fruit": "Gland",
-    "url_image_principale": "https://picsum.photos/600/400?tree,oak",
+    "url_image_principale": "images/chêne_pedon_P",
     "source_verification": "Base de données Flore Européenne"
   },
   {
@@ -47,5 +47,6 @@
     "url_image_principale": "https://picsum.photos/600/400?rapeseed,yellow",
     "source_verification": "Base de données agronomique"
   }
+
 
 ]
