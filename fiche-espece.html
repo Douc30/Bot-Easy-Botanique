@@ -1,55 +1,119 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails de l'Espèce - Bot'Easy</title> <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <div class="logo">Bot'Easy</div>
-        <nav>
-            <a href="index.html">Accueil</a>
-            <a href="#">Bibliothèque</a>
-            <a href="#">Apprendre</a>
-            <a href="#">Contribuer</a>
-            <a href="#">À Propos</a>
-        </nav>
-    </header>
+// Fonction asynchrone pour charger les détails de l'espèce
+async function loadPlanteDetails() {
+    // 1. Récupérer l'ID de la plante depuis l'URL (Ex: ?id=1)
+    const urlParams = new URLSearchParams(window.location.search);
+    const planteId = parseInt(urlParams.get('id'));
 
-    <main class="fiche-main">
+    const ficheContent = document.querySelector('.fiche-content');
+
+    // Vérification initiale de l'ID
+    if (!planteId) {
+        ficheContent.innerHTML = "<p class='error-message'>Erreur: ID de plante non spécifié. Retournez à l'accueil pour sélectionner une espèce.</p>";
+        return;
+    }
+
+    // 2. Charger toutes les données depuis data.json
+    try {
+        const response = await fetch('data.json');
+        if (!response.ok) throw new Error("Erreur de chargement de data.json");
+        const allPlantesData = await response.json();
         
-        <section class="fiche-header">
-            <div class="identification">
-                <h1>Chargement...</h1>
-            </div>
-        </section>
+        // 3. Trouver la plante correspondante
+        const plante = allPlantesData.find(p => p.id_plante === planteId);
 
-        <section class="fiche-content">
-            
-            <div class="colonne-image" id="image-container">
-                <p>Chargement des images...</p>
-            </div>
-            
-            <div class="colonne-details" id="details-container">
-                <p>Chargement des détails de l'espèce...</p>
-            </div>
+        if (plante) {
+            // 4. Générer et afficher le contenu dynamique
+            renderPlante(plante);
+        } else {
+            ficheContent.innerHTML = "<p class='error-message'>Erreur: Plante non trouvée dans la base de données (ID non valide).</p>";
+        }
 
-            </section>
-        
-        <section class="liens-utiles">
-            <h2>Poursuivre l'Apprentissage</h2>
-            <a href="#" class="cta-secondary">Tester mes connaissances sur la famille</a>
-            <a href="glossaire.html" class="cta-secondary">Voir les termes du Glossaire associés</a>
-        </section>
+    } catch (error) {
+        console.error("Erreur critique lors du chargement des données:", error);
+        ficheContent.innerHTML = "<p class='error-message'>Erreur: Impossible de charger les données botaniques. Vérifiez la console pour plus de détails.</p>";
+    }
+}
 
-    </main>
-
-    <footer>
-        <p>&copy; 2024 Bot'Easy - Projet Éducatif | <a href="#">Sources</a> | <a href="#propos">À Propos</a></p>
-    </footer>
+// Fonction pour injecter les données dans le HTML
+function renderPlante(p) {
+    const header = document.querySelector('.fiche-header');
+    const imageContainer = document.getElementById('image-container');
+    const detailsContainer = document.getElementById('details-container');
     
-    <script src="fiche-script.js"></script> 
-</body>
-</html>
+    // --- 1. Remplir l'en-tête (Header) ---
+    // Nettoie l'ancien contenu (le "Chargement...") et le remplace
+    header.innerHTML = `
+        <div class="identification">
+            <p class="famille-tag">Famille : ${p.famille}</p>
+            <h1>${p.nom_commun_fr}</h1>
+            <p class="scientifique-name"><i>${p.nom_scientifique}</i></p>
+        </div>
+        
+        <div class="meta-info">
+            <div class="milieu-badge ${p.milieu_principal.toLowerCase().replace(/\s/g, '-')}">
+                Milieu Principal : ${p.milieu_principal} 🌳
+            </div>
+            <div class="milieu-badge statut">
+                Statut de Conservation : ${p.statut_conservation}
+            </div>
+        </div>
+    `;
+
+    // --- 2. Remplir la colonne Image (Galerie) ---
+    
+    // Génère les miniatures (en vérifiant si la clé existe dans data.json)
+    let miniaturesHTML = '';
+    if (p.urls_images_secondaires && p.urls_images_secondaires.length > 0) {
+         miniaturesHTML = p.urls_images_secondaires.map(url => 
+            `<img src="${url}" alt="Zoom sur un organe de la plante">`
+        ).join('');
+    }
+
+    imageContainer.innerHTML = `
+        <figure>
+            <img src="${p.url_image_principale}" alt="Image principale de ${p.nom_commun_fr}">
+            <figcaption>Cliché de ${p.nom_commun_fr} par un contributeur Bot'Easy.</figcaption>
+        </figure>
+        <div class="galerie-miniatures">
+            ${miniaturesHTML}
+        </div>
+    `;
+
+
+    // --- 3. Remplir la colonne Détails ---
+    
+    // Le code généré ici remplace TOUT le contenu du div id="details-container"
+    detailsContainer.innerHTML = `
+        <div class="bloc-details">
+            <h2>1. Description & Morphologie</h2>
+            <p>${p.description_generale}</p>
+        </div>
+
+        <div class="bloc-details">
+            <h3>Caractéristiques Clés d'Identification</h3>
+            <ul>
+                <li>**Type de Feuille :** <a href="glossaire.html">${p.type_feuille}</a></li>
+                <li>**Disposition :** <a href="glossaire.html">${p.disposition_feuille}</a></li>
+                <li>**Couleur des Fleurs :** ${p.couleur_fleur}</li>
+                <li>**Type de Fruit :** ${p.type_fruit}</li>
+            </ul>
+        </div>
+        
+        <div class="bloc-details">
+            <h2>2. Éléments Complémentaires</h2>
+            <p>Ajouter ici les informations sur l'écologie, les usages et le type de sol (à compléter dans votre JSON).</p>
+        </div>
+
+        <div class="bloc-details taxonomie">
+            <h2>3. Vérification des Données</h2>
+            <p>Source de vérification : **${p.source_verification}**</p>
+        </div>
+        
+        <div class="admin-meta">
+            <p>Fiche générée automatiquement. Dernière mise à jour des données : 2024.</p>
+        </div>
+    `;
+}
+
+// Lancer le chargement des détails lorsque la page est prête
+loadPlanteDetails();
